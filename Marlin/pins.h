@@ -927,9 +927,9 @@
 
 #ifndef SDSUPPORT
 // these pins are defined in the SD library if building with SD support
-  #define SCK_PIN          21
-  #define MISO_PIN         22
-  #define MOSI_PIN         23
+  #define SCK_PIN          9
+  #define MISO_PIN         11
+  #define MOSI_PIN         10
 #endif
 #endif
 
