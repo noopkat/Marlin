@@ -1,4 +1,6 @@
 This version is for supporting Printrboard
+The copy at https://github.com/PxT/Marlin is the official source as shipped by Printrbot HQ.  
+MarlinProductionBolts.cpp.hex is the pre-compiled version shipped on printrboards as of May 2012
 
 WARNING: 
 --------
