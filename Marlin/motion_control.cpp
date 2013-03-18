@@ -47,6 +47,8 @@ void mc_arc(float *position, float *target, float *offset, uint8_t axis_0, uint8
   float millimeters_of_travel = hypot(angular_travel*radius, fabs(linear_travel));
   if (millimeters_of_travel < 0.001) { return; }
   uint16_t segments = floor(millimeters_of_travel/MM_PER_ARC_SEGMENT);
+  if(segments == 0) segments = 1;
+  
   /*  
     // Multiply inverse feed_rate to compensate for the fact that this movement is approximated
     // by a number of discrete segments. The inverse feed_rate should be correct for the sum of 
@@ -123,17 +125,7 @@ void mc_arc(float *position, float *target, float *offset, uint8_t axis_0, uint8
     arc_target[axis_linear] += linear_per_segment;
     arc_target[E_AXIS] += extruder_per_segment;
 
-    if (min_software_endstops) {
-      if (arc_target[X_AXIS] < X_HOME_POS) arc_target[X_AXIS] = X_HOME_POS;
-      if (arc_target[Y_AXIS] < Y_HOME_POS) arc_target[Y_AXIS] = Y_HOME_POS;
-      if (arc_target[Z_AXIS] < Z_HOME_POS) arc_target[Z_AXIS] = Z_HOME_POS;
-    }
-
-    if (max_software_endstops) {
-      if (arc_target[X_AXIS] > X_MAX_LENGTH) arc_target[X_AXIS] = X_MAX_LENGTH;
-      if (arc_target[Y_AXIS] > Y_MAX_LENGTH) arc_target[Y_AXIS] = Y_MAX_LENGTH;
-      if (arc_target[Z_AXIS] > Z_MAX_LENGTH) arc_target[Z_AXIS] = Z_MAX_LENGTH;
-    }
+    clamp_to_software_endstops(arc_target);
     plan_buffer_line(arc_target[X_AXIS], arc_target[Y_AXIS], arc_target[Z_AXIS], arc_target[E_AXIS], feed_rate, extruder);
     
   }

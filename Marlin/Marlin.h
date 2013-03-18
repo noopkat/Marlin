@@ -1,8 +1,8 @@
 // Tonokip RepRap firmware rewrite based off of Hydra-mmm firmware.
 // Licence: GPL
 
-#ifndef __MARLINH
-#define __MARLINH
+#ifndef MARLIN_H
+#define MARLIN_H
 
 #define  HardwareSerial_h // trick to disable the standard HWserial
 
@@ -35,6 +35,10 @@
    #include "WProgram.h"
 #endif
 
+#ifdef MCP23017_LCD
+#include <Wire.h>
+#include <LiquidTWI2.h>
+#endif
 #include "MarlinSerial.h"
 
 #ifndef cbi
@@ -64,6 +68,7 @@
 
 
 #define SERIAL_PROTOCOL(x) MYSERIAL.print(x);
+#define SERIAL_PROTOCOL_F(x,y) MYSERIAL.print(x,y);
 #define SERIAL_PROTOCOLPGM(x) serialprintPGM(MYPGM(x));
 #define SERIAL_PROTOCOLLN(x) {MYSERIAL.print(x);MYSERIAL.write('\n');}
 #define SERIAL_PROTOCOLLNPGM(x) {serialprintPGM(MYPGM(x));MYSERIAL.write('\n');}
@@ -83,7 +88,11 @@ const char echomagic[] PROGMEM ="echo:";
 #define SERIAL_ECHOLN(x) SERIAL_PROTOCOLLN(x)
 #define SERIAL_ECHOLNPGM(x) SERIAL_PROTOCOLLNPGM(x)
 
-#define SERIAL_ECHOPAIR(name,value) {SERIAL_ECHOPGM(name);SERIAL_ECHO(value);}
+#define SERIAL_ECHOPAIR(name,value) (serial_echopair_P(PSTR(name),(value)))
+
+void serial_echopair_P(const char *s_P, float v);
+void serial_echopair_P(const char *s_P, double v);
+void serial_echopair_P(const char *s_P, unsigned long v);
 
 
 //things to write to serial from Programmemory. saves 400 to 2k of RAM.
@@ -102,7 +111,7 @@ FORCE_INLINE void serialprintPGM(const char *str)
 void get_command();
 void process_commands();
 
-void manage_inactivity(byte debug);
+void manage_inactivity();
 
 #if X_ENABLE_PIN > -1
   #define  enable_x() WRITE(X_ENABLE_PIN, X_ENABLE_ON)
@@ -121,8 +130,13 @@ void manage_inactivity(byte debug);
 #endif
 
 #if Z_ENABLE_PIN > -1
+  #ifdef Z_DUAL_STEPPER_DRIVERS
+    #define  enable_z() { WRITE(Z_ENABLE_PIN, Z_ENABLE_ON); WRITE(Z2_ENABLE_PIN, Z_ENABLE_ON); }
+    #define disable_z() { WRITE(Z_ENABLE_PIN,!Z_ENABLE_ON); WRITE(Z2_ENABLE_PIN,!Z_ENABLE_ON); }
+  #else
   #define  enable_z() WRITE(Z_ENABLE_PIN, Z_ENABLE_ON)
   #define disable_z() WRITE(Z_ENABLE_PIN,!Z_ENABLE_ON)
+  #endif
 #else
   #define enable_z() ;
   #define disable_z() ;
@@ -162,9 +176,17 @@ void ClearToSend();
 void get_coordinates();
 void prepare_move();
 void kill();
+void Stop();
+
+bool IsStopped();
 
 void enquecommand(const char *cmd); //put an ascii command at the end of the current buffer.
 void prepare_arc_move(char isclockwise);
+void clamp_to_software_endstops(float target[3]);
+
+#ifdef FAST_PWM_FAN
+void setPwmFrequency(uint8_t pin, int val);
+#endif
 
 #ifndef CRITICAL_SECTION_START
   #define CRITICAL_SECTION_START  unsigned char _sreg = SREG; cli();
@@ -175,6 +197,8 @@ extern float homing_feedrate[];
 extern bool axis_relative_modes[];
 extern float current_position[NUM_AXIS] ;
 extern float add_homeing[3];
+extern float min_pos[3];
+extern float max_pos[3];
 extern unsigned char FanSpeed;
 
 // Handling multiple extruders pins

@@ -108,6 +108,7 @@
 #define HEATER_2_PIN -1
 #define HEATER_BED_PIN 3
 
+#define KILL_PIN -1
 
 #define SDPOWER -1
 #define SDSS -1 // SCL pin of I2C header
@@ -206,6 +207,7 @@
 	#define SDCARDDETECT -1 		
     #define SUICIDE_PIN -1						//has to be defined; otherwise Power_off doesn't work
 	
+    #define KILL_PIN -1
 	//Pins for 4bit LCD Support 
     #define LCD_PINS_RS 18 
     #define LCD_PINS_ENABLE 17
@@ -267,6 +269,10 @@
 #define Z_MIN_PIN          18
 #define Z_MAX_PIN          19
 
+#define Z2_STEP_PIN        36
+#define Z2_DIR_PIN         34
+#define Z2_ENABLE_PIN      30
+
 #define E0_STEP_PIN        26
 #define E0_DIR_PIN         28
 #define E0_ENABLE_PIN      24
@@ -306,17 +312,21 @@
   //arduino pin which triggers an piezzo beeper
     #define BEEPER 33			// Beeper on AUX-4
 
+#ifndef MCP28017_LCD
     #define LCD_PINS_RS 16 
     #define LCD_PINS_ENABLE 17
     #define LCD_PINS_D4 23
     #define LCD_PINS_D5 25 
     #define LCD_PINS_D6 27
     #define LCD_PINS_D7 29
+#endif // MCP28017_LCD
     
     //buttons are directly attached using AUX-2
     #define BTN_EN1 37
     #define BTN_EN2 35
+#ifndef PANUCATT_VIKI
     #define BTN_ENC 31  //the click
+#endif
     
     #define BLEN_C 2
     #define BLEN_B 1
@@ -539,6 +549,7 @@
     #define LED_PIN         -1    //changed @ rkoeppl 20110410
     #define FAN_PIN         -1    //changed @ rkoeppl 20110410
     #define PS_ON_PIN       -1    //changed @ rkoeppl 20110410
+    #define KILL_PIN        -1    //changed @ drakelive 20120830
     //our pin for debugging.
     
     #define DEBUG_PIN        0
@@ -554,7 +565,10 @@
 * Sanguinololu pin assignment
 *
 ****************************************************************************************/
-#if MOTHERBOARD == 62
+#if MOTHERBOARD == 63
+#define MELZI
+#endif
+#if MOTHERBOARD == 62 || MOTHERBOARD == 63
 #undef MOTHERBOARD
 #define MOTHERBOARD 6
 #define SANGUINOLOLU_V_1_2 
@@ -569,18 +583,33 @@
 
 #define X_STEP_PIN         15
 #define X_DIR_PIN          21
+#if X_HOME_DIR < 0
 #define X_MIN_PIN          18
 #define X_MAX_PIN           -1
+#else
+# define X_MIN_PIN          -1
+# define X_MAX_PIN          18
+#endif
 
 #define Y_STEP_PIN         22
 #define Y_DIR_PIN          23
+#if Y_HOME_DIR < 0
 #define Y_MIN_PIN          19
 #define Y_MAX_PIN          -1
+#else
+# define Y_MIN_PIN          -1
+# define Y_MAX_PIN          19
+#endif
 
 #define Z_STEP_PIN         3
 #define Z_DIR_PIN          2
+#if Z_HOME_DIR < 0
 #define Z_MIN_PIN          20
 #define Z_MAX_PIN          -1
+#else
+# define Z_MIN_PIN          -1
+# define Z_MAX_PIN          20
+#endif
 
 #define E0_STEP_PIN         1
 #define E0_DIR_PIN          0
@@ -588,6 +617,11 @@
 #define LED_PIN            -1
 
 #define FAN_PIN            -1 
+
+#ifdef MELZI
+#define LED_PIN            28
+#define FAN_PIN            4
+#endif
 
 #define PS_ON_PIN          -1
 #define KILL_PIN           -1
@@ -620,6 +654,10 @@
 #define TEMP_BED_PIN        6   // MUST USE ANALOG INPUT NUMBERING NOT DIGITAL OUTPUT NUMBERING!!!!!!!!! (pin 34 bed)
 #define SDPOWER            -1
 #define SDSS               31
+
+#ifdef MELZI
+#define SDSS               24
+#endif
 
 #endif
 
@@ -672,7 +710,7 @@
 
 #define E1_STEP_PIN         49
 #define E1_DIR_PIN          47
-#define E1_ENABLE_PIN       51
+#define E1_ENABLE_PIN       48
 
 #define SDPOWER            -1
 #define SDSS               53
@@ -729,10 +767,18 @@
     #define LCD_PINS_D7 19
     
     //encoder rotation values
+    #ifndef ULTIMAKERCONTROLLER
     #define encrot0 0
     #define encrot1 2
     #define encrot2 3
     #define encrot3 1
+    #else
+     #define encrot0 0
+     #define encrot1 1
+     #define encrot2 3
+     #define encrot3 2
+
+    #endif
 
     #define SDCARDDETECT -1
     //bits in the shift register that carry the buttons for:
@@ -827,35 +873,35 @@
 #define KNOWN_BOARD 1
 
 
-#define X_STEP_PIN         28
-#define X_DIR_PIN          29
-#define X_ENABLE_PIN       19
-#define X_MIN_PIN          25
+#define X_STEP_PIN          0  
+#define X_DIR_PIN           1  
+#define X_ENABLE_PIN       39 
+#define X_MIN_PIN          13 
 #define X_MAX_PIN          -1    
 
-#define Y_STEP_PIN         30
-#define Y_DIR_PIN          31
-#define Y_ENABLE_PIN       26
-#define Y_MIN_PIN           20
+#define Y_STEP_PIN          2  
+#define Y_DIR_PIN           3 
+#define Y_ENABLE_PIN       38 
+#define Y_MIN_PIN          14 
 #define Y_MAX_PIN          -1    
 
-#define Z_STEP_PIN         32
-#define Z_DIR_PIN          33
-#define Z_ENABLE_PIN       17
-#define Z_MIN_PIN          27
+#define Z_STEP_PIN          4
+#define Z_DIR_PIN           5 
+#define Z_ENABLE_PIN       23 
+#define Z_MIN_PIN          15 
 #define Z_MAX_PIN          -1    
 
-#define E0_STEP_PIN         34
-#define E0_DIR_PIN          35
-#define E0_ENABLE_PIN       13
+#define E0_STEP_PIN         6  
+#define E0_DIR_PIN          7 
+#define E0_ENABLE_PIN       19 
 
 
 
-#define HEATER_0_PIN       15  // Extruder
+#define HEATER_0_PIN       21  // Extruder
 #define HEATER_1_PIN       -1
 #define HEATER_2_PIN       -1
-#define HEATER_BED_PIN     14  // Bed
-#define FAN_PIN            16  // Fan   
+#define HEATER_BED_PIN     20  // Bed
+#define FAN_PIN            22  // Fan   
 
 #define TEMP_0_PIN          7  // Extruder
 #define TEMP_1_PIN         -1
@@ -863,7 +909,7 @@
 #define TEMP_BED_PIN        6  // Bed
 
 #define SDPOWER            -1
-#define SDSS                20
+#define SDSS                8
 #define LED_PIN            -1
 #define PS_ON_PIN          -1
 #define KILL_PIN           -1 
@@ -871,9 +917,9 @@
 
 #ifndef SDSUPPORT
 // these pins are defined in the SD library if building with SD support  
-  #define SCK_PIN          21
-  #define MISO_PIN         22 
-  #define MOSI_PIN         23 
+  #define SCK_PIN           9 
+  #define MISO_PIN         11 
+  #define MOSI_PIN         10 
 #endif
 #endif
 
@@ -914,10 +960,10 @@
 #define HEATER_BED_PIN     14  // Bed
 #define FAN_PIN            16  // Fan
 
-#define TEMP_0_PIN          1  // Extruder
+#define TEMP_0_PIN          1  // Extruder - ANALOG PIN NUMBERING
 #define TEMP_1_PIN         -1
 #define TEMP_2_PIN         -1
-#define TEMP_BED_PIN        0  // Bed
+#define TEMP_BED_PIN        0  // Bed - ANALOG PIN NUMBERING
 
 #define SDPOWER            -1
 #define SDSS                26
@@ -931,6 +977,80 @@
   #define MISO_PIN         11
   #define MOSI_PIN         10
 #endif
+
+#ifdef ULTRA_LCD
+
+  #ifdef NEWPANEL
+  //arduino pin which triggers an piezzo beeper
+    #define BEEPER 33			// Beeper on AUX-4
+
+#ifndef MCP28017_LCD
+    #define LCD_PINS_RS 16 
+    #define LCD_PINS_ENABLE 17
+    #define LCD_PINS_D4 23
+    #define LCD_PINS_D5 25 
+    #define LCD_PINS_D6 27
+    #define LCD_PINS_D7 29
+#endif // MCP28017_LCD
+    
+    //buttons are directly attached using AUX-2
+    #define BTN_EN1 11 // PC1
+    #define BTN_EN2 12 // PC2
+#ifndef PANUCATT_VIKI
+    #define BTN_ENC 31  //the click
+#endif
+    
+    #define BLEN_C 2
+    #define BLEN_B 1
+    #define BLEN_A 0
+    
+    #define SDCARDDETECT -1		// Ramps does not use this port
+    
+      //encoder rotation values
+    #define encrot0 0
+    #define encrot1 2
+    #define encrot2 3
+    #define encrot3 1
+
+  #else //old style panel with shift register
+    //arduino pin witch triggers an piezzo beeper
+    #define BEEPER 33		No Beeper added
+
+    //buttons are attached to a shift register
+	// Not wired this yet
+    //#define SHIFT_CLK 38
+    //#define SHIFT_LD 42
+    //#define SHIFT_OUT 40
+    //#define SHIFT_EN 17
+    
+    #define LCD_PINS_RS 16 
+    #define LCD_PINS_ENABLE 17
+    #define LCD_PINS_D4 23
+    #define LCD_PINS_D5 25 
+    #define LCD_PINS_D6 27
+    #define LCD_PINS_D7 29
+    
+    //encoder rotation values
+    #define encrot0 0
+    #define encrot1 2
+    #define encrot2 3
+    #define encrot3 1
+
+    
+    //bits in the shift register that carry the buttons for:
+    // left up center down right red
+    #define BL_LE 7
+    #define BL_UP 6
+    #define BL_MI 5
+    #define BL_DW 4
+    #define BL_RI 3
+    #define BL_ST 2
+
+    #define BLEN_B 1
+    #define BLEN_A 0
+  #endif 
+#endif //ULTRA_LCD
+
 #endif
 
 /****************************************************************************************
@@ -989,6 +1109,161 @@
 #endif
 
 
+
+/****************************************************************************************
+* Open Motion controller with enable based extruders
+*
+*                        ATMega644
+*
+*                        +---\/---+
+*            (D 0) PB0  1|        |40  PA0 (AI 0 / D31)
+*            (D 1) PB1  2|        |39  PA1 (AI 1 / D30)
+*       INT2 (D 2) PB2  3|        |38  PA2 (AI 2 / D29)
+*        PWM (D 3) PB3  4|        |37  PA3 (AI 3 / D28)
+*        PWM (D 4) PB4  5|        |36  PA4 (AI 4 / D27)
+*       MOSI (D 5) PB5  6|        |35  PA5 (AI 5 / D26)
+*       MISO (D 6) PB6  7|        |34  PA6 (AI 6 / D25)
+*        SCK (D 7) PB7  8|        |33  PA7 (AI 7 / D24)
+*                  RST  9|        |32  AREF
+*                  VCC 10|        |31  GND 
+*                  GND 11|        |30  AVCC
+*                XTAL2 12|        |29  PC7 (D 23)
+*                XTAL1 13|        |28  PC6 (D 22)
+*       RX0 (D 8)  PD0 14|        |27  PC5 (D 21) TDI
+*       TX0 (D 9)  PD1 15|        |26  PC4 (D 20) TDO
+*  INT0 RX1 (D 10) PD2 16|        |25  PC3 (D 19) TMS
+*  INT1 TX1 (D 11) PD3 17|        |24  PC2 (D 18) TCK
+*       PWM (D 12) PD4 18|        |23  PC1 (D 17) SDA
+*       PWM (D 13) PD5 19|        |22  PC0 (D 16) SCL
+*       PWM (D 14) PD6 20|        |21  PD7 (D 15) PWM
+*                        +--------+
+*
+****************************************************************************************/
+#if MOTHERBOARD == 90 //Alpha OMCA board
+#define KNOWN_BOARD 1
+
+#ifndef __AVR_ATmega644__
+#error Oops!  Make sure you have 'SanguinoA' selected from the 'Tools -> Boards' menu.
+#endif
+
+#define X_STEP_PIN         21
+#define X_DIR_PIN          20
+#define X_ENABLE_PIN       24
+#define X_MIN_PIN          0
+#define X_MAX_PIN          -1
+
+#define Y_STEP_PIN         23
+#define Y_DIR_PIN          22
+#define Y_ENABLE_PIN       24
+#define Y_MIN_PIN          1
+#define Y_MAX_PIN          -1
+
+#define Z_STEP_PIN         26
+#define Z_DIR_PIN          25
+#define Z_ENABLE_PIN       24
+#define Z_MIN_PIN          2
+#define Z_MAX_PIN          -1
+
+#define E0_STEP_PIN         28
+#define E0_DIR_PIN          27
+#define E0_ENABLE_PIN       24
+
+#define E1_STEP_PIN         -1 // 19
+#define E1_DIR_PIN          -1 // 18
+#define E1_ENABLE_PIN       24
+
+#define E2_STEP_PIN         -1 // 17
+#define E2_DIR_PIN          -1 // 16
+#define E2_ENABLE_PIN       24
+
+#define SDPOWER            -1
+#define SDSS               11
+#define SDCARDDETECT       -1 // 10 optional also used as mode pin
+#define LED_PIN            -1
+#define FAN_PIN            3
+#define PS_ON_PIN          -1
+#define KILL_PIN           -1
+
+#define HEATER_0_PIN       4
+#define HEATER_1_PIN       -1 // 12 
+#define HEATER_2_PIN       -1 // 13
+#define TEMP_0_PIN          0 //D27   // MUST USE ANALOG INPUT NUMBERING NOT DIGITAL OUTPUT NUMBERING!!!!!!!!!
+#define TEMP_1_PIN         -1 // 1
+#define TEMP_2_PIN         -1 // 2
+#define HEATER_BED_PIN     -1 // 14/15
+#define TEMP_BED_PIN       -1 // 1,2 or I2C
+/*  Unused (1) (2) (3) 4 5 6 7 8 9 10 11 12 13 (14) (15) (16) 17 (18) (19) (20) (21) (22) (23) 24 (25) (26) (27) 28 (29) (30) (31)  */
+
+#endif
+
+#if MOTHERBOARD == 91  // Final OMCA board -- REF http://sanguino.cc/hardware
+#define KNOWN_BOARD 1
+
+#if !defined(__AVR_ATmega644P__) && !defined(__AVR_ATmega644__)
+#error Oops!  Make sure you have 'Sanguino' selected from the 'Tools -> Boards' menu. (Final OMCA board)
+#endif
+
+#define X_STEP_PIN         26
+#define X_DIR_PIN          25
+#define X_ENABLE_PIN       10
+#define X_MIN_PIN          0
+#define X_MAX_PIN          -1
+
+#define Y_STEP_PIN         28
+#define Y_DIR_PIN          27
+#define Y_ENABLE_PIN       10
+#define Y_MIN_PIN          1
+#define Y_MAX_PIN          -1
+
+#define Z_STEP_PIN         23
+#define Z_DIR_PIN          22
+#define Z_ENABLE_PIN       10
+#define Z_MIN_PIN          2
+#define Z_MAX_PIN          -1
+
+#define E0_STEP_PIN         24
+#define E0_DIR_PIN          21
+#define E0_ENABLE_PIN       10
+
+/* future proofing */
+#define __FS	20
+#define __FD	19
+#define __GS	18
+#define __GD	13
+
+#define UNUSED_PWM           14	/* PWM on LEFT connector */
+
+#define E1_STEP_PIN         -1 // 21
+#define E1_DIR_PIN          -1 // 20
+#define E1_ENABLE_PIN       -1 // 19
+
+#define E2_STEP_PIN         -1 // 21
+#define E2_DIR_PIN          -1 // 20
+#define E2_ENABLE_PIN       -1 // 18
+
+#define SDPOWER            -1
+#define SDSS               11
+#define SDCARDDETECT       -1 // 10 optional also used as mode pin
+#define LED_PIN            -1
+#define FAN_PIN            14 /* PWM on MIDDLE connector */
+#define PS_ON_PIN          -1
+#define KILL_PIN           -1
+
+#define HEATER_0_PIN        3 /*DONE PWM on RIGHT connector */
+#define HEATER_1_PIN       -1 
+#define HEATER_2_PIN       -1
+#define HEATER_1_PIN       -1 
+#define HEATER_2_PIN       -1
+#define TEMP_0_PIN          0 // ANALOG INPUT NUMBERING 
+#define TEMP_1_PIN          1 // ANALOG
+#define TEMP_2_PIN         -1 // 2
+#define HEATER_BED_PIN      4
+#define TEMP_BED_PIN        2 // 1,2 or I2C
+
+#define I2C_SCL				16
+#define I2C_SDA				17
+
+#endif
 
 
 #ifndef KNOWN_BOARD
