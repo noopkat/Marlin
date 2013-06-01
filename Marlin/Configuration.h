@@ -8,8 +8,8 @@
 //User specified version info of THIS file to display in [Pronterface, etc] terminal window during startup.
 //Implementation of an idea by Prof Braino to inform user that any changes made
 //to THIS file by the user have been successfully uploaded into firmware.
-#define STRING_VERSION_CONFIG_H "2012-02-25" //Personal revision number for changes to THIS file.
-#define STRING_CONFIG_H_AUTHOR "erik" //Who made the changes.
+#define STRING_VERSION_CONFIG_H "2013-06-01" //Personal revision number for changes to THIS file.
+#define STRING_CONFIG_H_AUTHOR "PxT" //Who made the changes.
 
 // This determines the communication speed of the printer
 #define BAUDRATE 250000
@@ -193,8 +193,22 @@ const bool Z_ENDSTOPS_INVERTING = false; // set to true to invert the logic of t
 //LCD and SD support
 //#define ULTRA_LCD  //general lcd support, also 16x2
 #define SDSUPPORT // Enable SD Card Support in Hardware Console
+#define PRINTRBOT_LCD   // Printrbot's LCD panel
 
-//#define ULTIPANEL
+#ifdef PRINTRBOT_LCD
+  #define NEWPANEL
+  #define ULTRA_LCD
+  #define PLA_PREHEAT_HOTEND_TEMP 180 
+  #define PLA_PREHEAT_HPB_TEMP 70
+  #define PLA_PREHEAT_FAN_SPEED 0		// Insert Value between 0 and 255
+
+  #define ABS_PREHEAT_HOTEND_TEMP 240
+  #define ABS_PREHEAT_HPB_TEMP 100
+  #define ABS_PREHEAT_FAN_SPEED 0	
+  
+#endif
+
+
 #ifdef ULTIPANEL
 //  #define NEWPANEL  //enable this if you have a click-encoder panel
   #define SDSUPPORT
@@ -213,9 +227,14 @@ const bool Z_ENDSTOPS_INVERTING = false; // set to true to invert the logic of t
 
 #else //no panel but just lcd 
   #ifdef ULTRA_LCD
-    #define LCD_WIDTH 16
-    #define LCD_HEIGHT 2
-  #endif
+    #ifdef PRINTRBOT_LCD
+      #define LCD_WIDTH 20
+      #define LCD_HEIGHT 4
+    #else
+      #define LCD_WIDTH 16
+      #define LCD_HEIGHT 2
+    #endif
+  #endif 
 #endif
 
 // M240  Triggers a camera by emulating a Canon RC-1 Remote

@@ -925,6 +925,44 @@
 #define PS_ON_PIN          -1
 #define KILL_PIN           -1
 
+#ifdef ULTRA_LCD
+  #define BEEPER -1
+
+  #define LCD_PINS_RS 9
+  #define LCD_PINS_ENABLE 8
+  #define LCD_PINS_D4 7
+  #define LCD_PINS_D5 6
+  #define LCD_PINS_D6 5
+  #define LCD_PINS_D7 4
+
+  #define BTN_EN1   16
+  #define BTN_EN2   17
+  #define BTN_ENC   18//the click
+
+  #define BLEN_C 2
+  #define BLEN_B 1
+  #define BLEN_A 0
+
+  #define SDCARDDETECT -1
+
+  //encoder rotation values
+  #define encrot0 0
+  #define encrot1 2
+  #define encrot2 3
+  #define encrot3 1
+  
+  //bits in the shift register that carry the buttons for:
+  // left up center down right red
+  #define BL_LE 7
+  #define BL_UP 6
+  #define BL_MI 5
+  #define BL_DW 4
+  #define BL_RI 3
+  #define BL_ST 2
+
+#endif
+
+
 #ifndef SDSUPPORT
 // these pins are defined in the SD library if building with SD support
   #define SCK_PIN          9
