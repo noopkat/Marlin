@@ -236,8 +236,8 @@ FORCE_INLINE unsigned short calc_timer(unsigned short step_rate) {
     step_loops = 1;
   } 
   
-  if(step_rate < (F_CPU/500000)) step_rate = (F_CPU/500000);
-  step_rate -= (F_CPU/500000); // Correct for minimal speed
+  if(step_rate < 32) step_rate = 32;
+  step_rate -= 32; // Correct for minimal speed
   if(step_rate >= (8*256)){ // higher step rate 
     unsigned short table_address = (unsigned short)&speed_lookuptable_fast[(unsigned char)(step_rate>>8)][0];
     unsigned char tmp_step_rate = (step_rate & 0x00ff);
@@ -437,7 +437,7 @@ ISR(TIMER1_COMPA_vect)
 
     
     for(int8_t i=0; i < step_loops; i++) { // Take multiple steps per interrupt (For high speed moves) 
-      #if !defined(__AVR_AT90USB1286__) && !defined(__AVR_AT90USB1287__)
+      #if MOTHERBOARD != 8 && MOTHERBOARD != 90 // !teensylu
       MSerial.checkRx(); // Check for serial chars.
       #endif 
       

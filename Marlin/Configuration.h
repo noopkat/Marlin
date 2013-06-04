@@ -8,12 +8,12 @@
 //User specified version info of THIS file to display in [Pronterface, etc] terminal window during startup.
 //Implementation of an idea by Prof Braino to inform user that any changes made
 //to THIS file by the user have been successfully uploaded into firmware.
-#define STRING_VERSION_CONFIG_H "2013-06-01" //Personal revision number for changes to THIS file.
+#define STRING_VERSION_CONFIG_H "2013-06-03" //Personal revision number for changes to THIS file.
 #define STRING_CONFIG_H_AUTHOR "PxT" //Who made the changes.
 
 // This determines the communication speed of the printer
-#define BAUDRATE 250000
-//#define BAUDRATE 115200
+//#define BAUDRATE 250000
+#define BAUDRATE 115200
 
 //// The following define selects which electronics board you have. Please choose the one that matches your setup
 // Gen7 custom (Alfons3 Version) = 10 "https://github.com/Alfons3/Generation_7_Electronics"
@@ -28,9 +28,9 @@
 // Sanguinololu 1.2 and above = 62
 // Ultimaker = 7
 // Teensylu = 8
-// Printrboard = 81
 // Gen3+ =9
-#define MOTHERBOARD 81
+// Printrboard Rev B = 99
+#define MOTHERBOARD 90
 
 //===========================================================================
 //=============================Thermal Settings  ============================
@@ -51,27 +51,27 @@
 #define TEMP_SENSOR_0 1
 #define TEMP_SENSOR_1 0
 #define TEMP_SENSOR_2 0
-#define TEMP_SENSOR_BED 6
+#define TEMP_SENSOR_BED 1
 
 // Actual temperature must be close to target for this long before M109 returns success
-#define TEMP_RESIDENCY_TIME 1	// (seconds)
-#define TEMP_HYSTERESIS 4       // (degC) range of +/- temperatures considered "close" to the target one
+#define TEMP_RESIDENCY_TIME 10	// (seconds)
+#define TEMP_HYSTERESIS 3       // (degC) range of +/- temperatures considered "close" to the target one
 
 // The minimal temperature defines the temperature below which the heater will not be enabled It is used
 // to check that the wiring to the thermistor is not broken. 
 // Otherwise this would lead to the heater being powered on all the time.
-#define HEATER_0_MINTEMP 5
-#define HEATER_1_MINTEMP 5
-#define HEATER_2_MINTEMP 5
-#define BED_MINTEMP 5
+//#define HEATER_0_MINTEMP 5
+//#define HEATER_1_MINTEMP 5
+//#define HEATER_2_MINTEMP 5
+//#define BED_MINTEMP 5
 
 // When temperature exceeds max temp, your heater will be switched off.
 // This feature exists to protect your hotend from overheating accidentally, but *NOT* from thermistor short/failure!
 // You should use MINTEMP for thermistor short/failure protection.
-#define HEATER_0_MAXTEMP 250
-#define HEATER_1_MAXTEMP 250
-#define HEATER_2_MAXTEMP 250
-#define BED_MAXTEMP 150
+//#define HEATER_0_MAXTEMP 275
+//#define HEATER_1_MAXTEMP 275
+//#define HEATER_2_MAXTEMP 275
+//#define BED_MAXTEMP 150
 
 
 // PID settings:
@@ -83,13 +83,13 @@
   //#define PID_OPENLOOP 1 // Puts PID in open loop. M104 sets the output power in %
   #define PID_INTEGRAL_DRIVE_MAX 255  //limit for the integral term
   #define K1 0.95 //smoothing factor withing the PID
-  #define PID_dT ((16.0 * 8.0)/(F_CPU / 64.0 / 256.0)) //sampling period of the
+  #define PID_dT 0.128 //sampling period of the PID
 
 // If you are using a preconfigured hotend then you can use one of the value sets by uncommenting it
 // Ultimaker
     #define  DEFAULT_Kp  22.2
-    #define  DEFAULT_Ki (1.08*PID_dT)  
-    #define  DEFAULT_Kd (114/PID_dT)  
+    #define  DEFAULT_Ki (1.25*PID_dT)  
+    #define  DEFAULT_Kd (99/PID_dT)  
 
 // Makergear
 //    #define  DEFAULT_Kp 7.0
@@ -105,9 +105,9 @@
 //this prevents dangerous Extruder moves, i.e. if the temperature is under the limit
 //can be software-disabled for whatever purposes by
 #define PREVENT_DANGEROUS_EXTRUDE
-#define EXTRUDE_MINTEMP 170
+#define EXTRUDE_MINTEMP 0
 #define EXTRUDE_MAXLENGTH (X_MAX_LENGTH+Y_MAX_LENGTH) //prevent extrusion of very large distances.
-
+#define BOGUS_TEMPERATURE_FAILSAFE_OVERRIDE
 //===========================================================================
 //=============================Mechanical Settings===========================
 //===========================================================================
@@ -119,7 +119,6 @@
 const bool X_ENDSTOPS_INVERTING = false; // set to true to invert the logic of the endstops. 
 const bool Y_ENDSTOPS_INVERTING = false; // set to true to invert the logic of the endstops. 
 const bool Z_ENDSTOPS_INVERTING = false; // set to true to invert the logic of the endstops. 
-#define DISABLE_MAX_ENDSTOPS
 
 // For Inverting Stepper Enable Pins (Active Low) use 0, Non Inverting (Active High) use 1
 #define X_ENABLE_ON 0
@@ -133,8 +132,8 @@ const bool Z_ENDSTOPS_INVERTING = false; // set to true to invert the logic of t
 #define DISABLE_Z true
 #define DISABLE_E false // For all extruders
 
-#define INVERT_X_DIR true    // for Mendel set to false, for Orca set to true
-#define INVERT_Y_DIR true    // for Mendel set to true, for Orca set to false
+#define INVERT_X_DIR true     // for Mendel set to false, for Orca set to true
+#define INVERT_Y_DIR false    // for Mendel set to true, for Orca set to false
 #define INVERT_Z_DIR true     // for Mendel set to false, for Orca set to true
 #define INVERT_E0_DIR false   // for direct drive extruder v9 set to true, for geared extruder set to false
 #define INVERT_E1_DIR false    // for direct drive extruder v9 set to true, for geared extruder set to false
@@ -159,16 +158,16 @@ const bool Z_ENDSTOPS_INVERTING = false; // set to true to invert the logic of t
 
 //// MOVEMENT SETTINGS
 #define NUM_AXIS 4 // The axis order in all axis related arrays is X, Y, Z, E
-#define HOMING_FEEDRATE {50*60, 50*60, 2*60, 0}  // set the homing speeds (mm/min)
+#define HOMING_FEEDRATE {50*60, 50*60, 4*60, 0}  // set the homing speeds (mm/min)
 
 // default settings 
 
-#define DEFAULT_AXIS_STEPS_PER_UNIT   {63.36,63.36,2272.72,590}                    // default steps per unit for ultimaker 
-#define DEFAULT_MAX_FEEDRATE          {60, 60, 2, 14}    // (mm/sec)    
-#define DEFAULT_MAX_ACCELERATION      {2000,2000,30,10000}    // X, Y, Z, E maximum start speed for accelerated moves. E default values are good for skeinforge 40+, for older versions raise them a lot.
+#define DEFAULT_AXIS_STEPS_PER_UNIT   {64.8592,64,8592,2387,569}                    // default steps per unit for ultimaker 
+#define DEFAULT_MAX_FEEDRATE          {500, 500, 5, 45}    // (mm/sec)    
+#define DEFAULT_MAX_ACCELERATION      {1000,1000,100,2000}    // X, Y, Z, E maximum start speed for accelerated moves. E default values are good for skeinforge 40+, for older versions raise them a lot.
 
-#define DEFAULT_ACCELERATION          3000    // X, Y, Z and E max acceleration in mm/s^2 for printing moves 
-#define DEFAULT_RETRACT_ACCELERATION  3000   // X, Y, Z and E max acceleration in mm/s^2 for r retracts
+#define DEFAULT_ACCELERATION          1000    // X, Y, Z and E max acceleration in mm/s^2 for printing moves 
+#define DEFAULT_RETRACT_ACCELERATION  1000   // X, Y, Z and E max acceleration in mm/s^2 for r retracts
 
 // 
 #define DEFAULT_XYJERK                20.0    // (mm/sec)
@@ -191,26 +190,13 @@ const bool Z_ENDSTOPS_INVERTING = false; // set to true to invert the logic of t
 #define EEPROM_CHITCHAT
 
 //LCD and SD support
-//#define ULTRA_LCD  //general lcd support, also 16x2
+#define ULTRA_LCD  //general lcd support, also 16x2
 #define SDSUPPORT // Enable SD Card Support in Hardware Console
-#define PRINTRBOT_LCD   // Printrbot's LCD panel
+#define ULTIPANEL
 
-#ifdef PRINTRBOT_LCD
-  #define NEWPANEL
-  #define ULTRA_LCD
-  #define PLA_PREHEAT_HOTEND_TEMP 180 
-  #define PLA_PREHEAT_HPB_TEMP 70
-  #define PLA_PREHEAT_FAN_SPEED 0		// Insert Value between 0 and 255
-
-  #define ABS_PREHEAT_HOTEND_TEMP 240
-  #define ABS_PREHEAT_HPB_TEMP 100
-  #define ABS_PREHEAT_FAN_SPEED 0	
-  
-#endif
-
-
+//#define ULTIPANEL
 #ifdef ULTIPANEL
-//  #define NEWPANEL  //enable this if you have a click-encoder panel
+  #define NEWPANEL  //enable this if you have a click-encoder panel
   #define SDSUPPORT
   #define ULTRA_LCD
   #define LCD_WIDTH 20
@@ -227,14 +213,9 @@ const bool Z_ENDSTOPS_INVERTING = false; // set to true to invert the logic of t
 
 #else //no panel but just lcd 
   #ifdef ULTRA_LCD
-    #ifdef PRINTRBOT_LCD
-      #define LCD_WIDTH 20
-      #define LCD_HEIGHT 4
-    #else
-      #define LCD_WIDTH 16
-      #define LCD_HEIGHT 2
-    #endif
-  #endif 
+    #define LCD_WIDTH 20
+    #define LCD_HEIGHT 4
+  #endif
 #endif
 
 // M240  Triggers a camera by emulating a Canon RC-1 Remote
