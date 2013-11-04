@@ -925,6 +925,31 @@
 #define PS_ON_PIN          -1
 #define KILL_PIN           -1
 
+#define BEEPER -1
+
+    #define LCD_PINS_RS 9
+    #define LCD_PINS_ENABLE 8
+    #define LCD_PINS_D4 7
+    #define LCD_PINS_D5 6
+    #define LCD_PINS_D6 5
+    #define LCD_PINS_D7 4
+    
+    #define BTN_EN1   17//d5
+    #define BTN_EN2   16//d7
+    #define BTN_ENC   18//the click
+    
+    #define BLEN_C 2
+    #define BLEN_B 1
+    #define BLEN_A 0
+    
+    #define SDCARDDETECT -1
+    
+      //encoder rotation values
+    #define encrot0 0
+    #define encrot1 2
+    #define encrot2 3
+    #define encrot3 1
+
 #ifndef SDSUPPORT
 // these pins are defined in the SD library if building with SD support
   #define SCK_PIN          9
