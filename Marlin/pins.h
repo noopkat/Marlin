@@ -934,9 +934,9 @@
     #define LCD_PINS_D6 5
     #define LCD_PINS_D7 4
     
-    #define BTN_EN1   17//d5
-    #define BTN_EN2   16//d7
-    #define BTN_ENC   18//the click
+    #define BTN_EN1   11//d5
+    #define BTN_EN2   10//d7
+    #define BTN_ENC   12//the click
     
     #define BLEN_C 2
     #define BLEN_B 1
