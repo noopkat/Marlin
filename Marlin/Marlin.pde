@@ -571,7 +571,6 @@ void process_commands()
       previous_millis_cmd = millis();
       while(millis()  < codenum ){
         manage_heater();
-        manage_inactivity(1);
       }
       break;
     case 28: //G28 Home all Axis one at a time
@@ -910,7 +909,6 @@ void process_commands()
             codenum = millis();
           }
           manage_heater();
-          manage_inactivity(1);
           LCD_STATUS;
         #ifdef TEMP_RESIDENCY_TIME
             /* start/restart the TEMP_RESIDENCY_TIME timer whenever we reach target temp for the first time
@@ -947,7 +945,6 @@ void process_commands()
             codenum = millis(); 
           }
           manage_heater();
-          manage_inactivity(1);
           LCD_STATUS;
         }
         LCD_MESSAGEPGM(MSG_BED_DONE);
@@ -1421,9 +1418,8 @@ void manage_inactivity(byte debug)
 void kill()
 {
   SERIAL_ERROR_START;
-  SERIAL_ERRORLNPGM("Printer halted. kill() called !!");
-  LCD_MESSAGEPGM("KILLED. ");
-
+  SERIAL_ERRORLNPGM(MSG_ERR_KILLED);
+  LCD_MESSAGEPGM(MSG_KILLED);
   disable_heater();
 
   disable_x();
@@ -1432,14 +1428,11 @@ void kill()
   disable_e0();
   disable_e1();
   disable_e2();
-
-  cli(); // Stop interrupts
-
+  
+//  cli(); // Stop interrupts
   if(PS_ON_PIN > -1) pinMode(PS_ON_PIN,INPUT);
   suicide();
-#if !defined(__AVR_AT90USB1286__) && !defined(__AVR_AT90USB1287__) // this will kill the usb serial so the messages aren't seen 
-  while(1); // Wait for reset
-#endif
+//  while(1); // Wait for reset
 }
 
 
