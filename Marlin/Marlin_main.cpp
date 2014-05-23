@@ -821,6 +821,7 @@ static void axis_is_at_home(int axis) {
   max_pos[axis] =          base_max_pos(axis) + add_homeing[axis];
 }
 
+//============================= Bed Auto Leveling ===========================
 #ifdef ENABLE_AUTO_BED_LEVELING
 #ifdef ACCURATE_BED_LEVELING
 static void set_bed_level_equation_lsq(double *plane_equation_coefficients)
@@ -890,6 +891,7 @@ bool touching_print_surface(int threshold) {
 static void run_z_probe() {
     plan_bed_level_matrix.set_to_identity();
 
+// noopkat TODO: move this out of delta conditional before implementing
 #ifdef DELTA
   #ifdef FSR_BED_LEVELING
     feedrate = 600; //mm/min
@@ -1114,6 +1116,7 @@ static float probe_pt(float x, float y, float z_before) {
 
 #endif // #ifdef ENABLE_AUTO_BED_LEVELING
 
+
 #ifdef NONLINEAR_BED_LEVELING
 static void extrapolate_one_point(int x, int y, int xdir, int ydir) {
   if (bed_level[x][y] != 0.0) {
@@ -1132,6 +1135,7 @@ static void extrapolate_one_point(int x, int y, int xdir, int ydir) {
   }
   bed_level[x][y] = median;
 }
+
 
 // Fill in the unprobed points (corners of circular print surface)
 // using linear extrapolation, away from the center.
@@ -1168,6 +1172,9 @@ static void reset_bed_level() {
   }
 }
 #endif //NONLINEAR_BED_LEVELING
+
+//============================= END OF Bed Auto Leveling ===========================
+// noopkat -- end bed leveling flags, don't copy remaining below
 
 static void homeaxis(int axis) {
 #define HOMEAXIS_DO(LETTER) \
@@ -1558,7 +1565,7 @@ void process_commands()
     case 29: // G29 Detailed Z-Probe, probes the bed at 3 or more points.
         {
             #if Z_MIN_PIN == -1
-            #error "You must have a Z_MIN endstop in order to enable Auto Bed Leveling feature!!! Z_MIN_PIN must point to a valid hardware pin."
+              #error "You must have a Z_MIN endstop in order to enable Auto Bed Leveling feature!!! Z_MIN_PIN must point to a valid hardware pin."
             #endif
 
             st_synchronize();

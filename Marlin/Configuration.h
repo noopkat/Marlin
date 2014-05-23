@@ -371,13 +371,19 @@ const bool Z_MAX_ENDSTOP_INVERTING = false; // set to true to invert the logic o
 #define X_MAX_LENGTH (X_MAX_POS - X_MIN_POS)
 #define Y_MAX_LENGTH (Y_MAX_POS - Y_MIN_POS)
 #define Z_MAX_LENGTH (Z_MAX_POS - Z_MIN_POS)
+
+
 //============================= Bed Auto Leveling ===========================
 
+// noopkat TODO: implement this in your configuration for the junior
+// make sure to fix the variables and change them when it's referring to delta vars
 #define ENABLE_AUTO_BED_LEVELING // Delete the comment to enable (remove // at the start of the line)
 
 #ifdef ENABLE_AUTO_BED_LEVELING
 
   // these are the positions on the bed to do the probing
+  // noopkat TODO: change these to non delta limits, put printing radius at a maximum to simulate a rectangle
+  // noopkat TODO: look into what probable radius is
   #define DELTA_PROBABLE_RADIUS (DELTA_PRINTABLE_RADIUS-9)
   #define LEFT_PROBE_BED_POSITION -DELTA_PRINTABLE_RADIUS
   #define RIGHT_PROBE_BED_POSITION DELTA_PRINTABLE_RADIUS
@@ -385,10 +391,12 @@ const bool Z_MAX_ENDSTOP_INVERTING = false; // set to true to invert the logic o
   #define FRONT_PROBE_BED_POSITION -DELTA_PRINTABLE_RADIUS
 
   // these are the offsets to the probe relative to the extruder tip (Hotend - Probe)
+  // noopkat TODO: leave these as they are, they're correct for the hotend being the probe
   #define X_PROBE_OFFSET_FROM_EXTRUDER 0.0
   #define Y_PROBE_OFFSET_FROM_EXTRUDER 0.0
   #define Z_PROBE_OFFSET_FROM_EXTRUDER 0.1  // Increase this if the first layer is too thin.
 
+  // noopkat TODO: maybe lower this amount a little bit, until the acme rod is installed. Otherwise bed levelling will be much slower
   #define Z_RAISE_BEFORE_HOMING 4       // (in mm) Raise Z before homing (G28) for Probe Clearance.
                                         // Be sure you have this distance over your Z_MAX_POS in case
 
@@ -409,6 +417,7 @@ const bool Z_MAX_ENDSTOP_INVERTING = false; // set to true to invert the logic o
 //If you have enabled the Bed Auto Leveling and are using the same Z Probe for Z Homing,
 //it is highly recommended you let this Z_SAFE_HOMING enabled!!!
 
+  // noopkat TODO: you can totally disable this, as we're not using a probe at all, and the print bed is square not circular.
   #define Z_SAFE_HOMING   // This feature is meant to avoid Z homing with probe outside the bed area.
                           // When defined, it will:
                           // - Allow Z homing only after X and Y homing AND stepper drivers still enabled
@@ -417,7 +426,8 @@ const bool Z_MAX_ENDSTOP_INVERTING = false; // set to true to invert the logic o
                           // - Block Z homing only when the probe is outside bed area.
 
   #ifdef Z_SAFE_HOMING
-
+    
+    // noopkat TODO: you could probably change this to just 0 because this is not a delta (bed 0,0 is not in center on a delta, vars below are trying to emulate center instead left bottom corner)
     #define Z_SAFE_HOMING_X_POINT (X_MAX_LENGTH/2)    // X point for Z homing when homing all axis (G28)
     #define Z_SAFE_HOMING_Y_POINT (Y_MAX_LENGTH/2)    // Y point for Z homing when homing all axis (G28)
 
@@ -425,6 +435,7 @@ const bool Z_MAX_ENDSTOP_INVERTING = false; // set to true to invert the logic o
 
   // with accurate bed leveling, the bed is sampled in a ACCURATE_BED_LEVELING_POINTSxACCURATE_BED_LEVELING_POINTS grid and least squares solution is calculated
   // Note: this feature occupies 10'206 byte
+  // noopkat TODO: Brooke Drumm has disabled accurate bed leveling, so I should too. I suspect it's because there's not enough space on the board for it.
   #define ACCURATE_BED_LEVELING
 
   #ifdef ACCURATE_BED_LEVELING
@@ -436,6 +447,7 @@ const bool Z_MAX_ENDSTOP_INVERTING = false; // set to true to invert the logic o
     // compensate by interpolating between the nearest four Z probe values for each point.
     // Useful for deltabots where the print surface may appear like a bowl or dome shape.
     // Works best with ACCURATE_BED_LEVELING_POINTS 5 or higher.
+    // noopkat TODO: you should probably disable this, as the below flag is for delta print bed shape compensation.
     #define NONLINEAR_BED_LEVELING
   #endif
 
@@ -445,7 +457,12 @@ const bool Z_MAX_ENDSTOP_INVERTING = false; // set to true to invert the logic o
 #endif
 
 
+//============================= END OF Bed Auto Leveling ===========================
+// noopkat -- end bed leveling flags, don't copy remaining below
+
+
 // The position of the homing switches
+// noopkat TODO: Brooke disabled these below, it's probably a good idea to do the same!
 #define MANUAL_HOME_POSITIONS  // If defined, MANUAL_*_HOME_POS below will be used
 #define BED_CENTER_AT_0_0  // If defined, the center of the bed is at (X=0, Y=0)
 
