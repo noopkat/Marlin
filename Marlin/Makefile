@@ -43,11 +43,11 @@ HARDWARE_MOTHERBOARD ?= 81
 # Arduino source install directory, and version number
 # On MacOS this will be something like /Applications/Arduino.app/Contents/Resources/Java/
 # On Windows it might be something like C:\Arduino
-ARDUINO_INSTALL_DIR  ?= /Applications/Arduino.app/Contents/Resources/Java/
+ARDUINO_INSTALL_DIR  ?= /Applications/Arduino-printrboard2.app/Contents/Resources/Java
 ARDUINO_VERSION      ?= 105
 
 # You can optionally set a path to the avr-gcc tools. Requires a trailing slash. (ex: /usr/local/avr-gcc/bin)
-AVR_TOOLS_PATH ?= /Applications/Arduino.app/Contents/Resources/Java/hardware/tools/avr/bin/
+AVR_TOOLS_PATH ?= /Applications/Arduino-printrboard2.app/Contents/Resources/Java/hardware/tools/avr/bin/
 
 #Programmer configuration
 UPLOAD_RATE        ?= 115200
@@ -253,7 +253,7 @@ ifeq ($(shell [ $(ARDUINO_VERSION) -ge 100 ] && echo true), true)
 CXXSRC += main.cpp
 else
 ifeq ($(HARDWARE_VARIANT), Teensy)
-SRC += pins_teensy.c 
+SRC += pins_at90usb1286.c
 else
 SRC += pins_arduino.c main.c
 endif
@@ -291,8 +291,8 @@ CXXDEFS  = $(CDEFS)
 
 ifeq ($(HARDWARE_VARIANT), Teensy)
 CDEFS  += -DUSB_SERIAL
-SRC    += usb.c pins_teensy.c
-CXXSRC += usb_api.cpp
+SRC    += usb.c pins_at90usb1286.c
+CXXSRC += usb_api.cpp vector_3.cpp
 endif
 
 # Add all the source directories as include directories too
